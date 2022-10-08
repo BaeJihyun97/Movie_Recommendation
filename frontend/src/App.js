@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useState } from 'react';
 import Login from './pages/Login';
 import Main from './pages/Main';
+import Recommend from './pages/Recommend';
 import {UserContext} from './component';
 
 
@@ -14,6 +15,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={ <Main /> }/>
                     <Route path="/login" element={ <Login /> }/>
+                    <Route path="/recommend" element={ <Recommend /> }/>
                 </Routes>
             </UserContext.Provider>
         </BrowserRouter>
