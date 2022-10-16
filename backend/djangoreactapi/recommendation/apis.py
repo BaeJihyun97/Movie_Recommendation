@@ -7,10 +7,16 @@ from numpy import dot
 from numpy.linalg import norm
 import json
 
-np_load = np.load('../../../embed_movie_learned.npy')
+np_load = np.load('../../embed_movie_learned.npy')
 embed_movie_learned = torch.from_numpy(np_load)
 
-titles = pd.read_csv('../../../node_title.txt', sep='\t')['title'].tolist()
+titles = pd.read_csv('../../node_title.txt', sep='\t')['title'].tolist()
+
+labels = pd.read_csv("../../image_clustered.txt", sep="\t")
+image_clustered_label = []
+for label in labels["labels"]:
+  image_clustered_label.append([int(t) for t in re.sub(pattern="[\[\]]", repl="", string = label).split(",")])
+
 
 def cos_sim(A, B):
   return dot(A, B)/(norm(A)*norm(B))
@@ -58,6 +64,7 @@ def recommendGraph(Neo4jConnection, movie_title):
     response = Neo4jConnection.query(query, db='neo4j')
     response2 = Neo4jConnection.query(query2, db='neo4j')
 
+
     for c in response:
         t = [c["n.id"], cos_sim(target, embed_movie_learned[c])]
         if t not in score:
@@ -76,18 +83,72 @@ def recommendGraph(Neo4jConnection, movie_title):
 
     for i in range(5):
         recommT.append({"movie_content_seq": i,
+                        "movie_content_id": score[i][0],
                         "movieTitle": titles[score[i][0]]})
         recomm.append({"movie_content_seq": i,
+                       "movie_content_id": score[i][0],
                        "movieTitle": score[i][0]})
 
     for i in range(5):
         recommT.append({"movie_content_seq": i + 5,
+                        "movie_content_id": score2[i][0],
                         "movieTitle": titles[score2[i][0]]})
         recomm.append({"movie_content_seq": i + 5,
+                       "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
 
-    return json.dumps(recommT)
+    return recommT
 
+def recommendImage(Neo4jConnection, movie_title):
+
+    target = image_clustered_label[titles.index(movie_title)]
+    movie_title = re.sub(pattern='[^\w\s]', repl='', string=movie_title)
+    movie_title = re.sub(pattern=' ', repl='_', string=movie_title)
+
+    query = f"match path1 = (n:Movie)<-[]-()-[]->(m:Movie{{name:'{movie_title}'}}) return n.id"
+    query2 = f"match path1 = (n:Movie)-[]->(l:Genre)<-[]-(m:Movie{{name:'{movie_title}'}}), path2= (n:Movie)-[]->(l2:Nation)<-[]-(m:Movie{{name:'{movie_title}'}}), path3 = (n:Movie)-[]->(l3:Age)<-[]-(m:Movie{{name:'{movie_title}'}}) return n.id limit 50"
+    response = Neo4jConnection.query(query, db='neo4j')
+    response2 = Neo4jConnection.query(query2, db='neo4j')
+
+    score = []
+    score2 = []
+
+
+    for c in response:
+        # print(c["n.id"])
+        t = [c["n.id"], cos_sim(target, image_clustered_label[c["n.id"]])]
+        if t not in score:
+            score.append(t)
+
+    for c in response2:
+        t = [c["n.id"], cos_sim(target, image_clustered_label[c["n.id"]])]
+        if t not in score and t not in score2:
+            score2.append([c["n.id"], cos_sim(target, image_clustered_label[c["n.id"]])])
+
+    score.sort(key=lambda row: (row[1], row[0]), reverse=True)
+    score2.sort(key=lambda row: (row[1], row[0]), reverse=True)
+
+
+    recommT = []
+    recomm = []
+
+    for i in range(5):
+        recommT.append({"movie_content_seq": i,
+                        "movie_content_id": score[i][0],
+                        "movieTitle": titles[score[i][0]]})
+        recomm.append({"movie_content_seq": i,
+                       "movie_content_id": score[i][0],
+                       "movieTitle": score[i][0]})
+
+    for i in range(5):
+        recommT.append({"movie_content_seq": i + 5,
+                        "movie_content_id": score2[i][0],
+                        "movieTitle": titles[score2[i][0]]})
+        recomm.append({"movie_content_seq": i + 5,
+                       "movie_content_id": score2[i][0],
+                       "movieTitle": score2[i][0]})
+
+    return recommT
 
 
 

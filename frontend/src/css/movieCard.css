@@ -1,0 +1,11 @@
+#card {
+    padding: 0.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.movieTable {
+    padding: 0.5rem 2rem;
+    display: flex;
+    flex-direction: row;
+}

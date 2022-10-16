@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import json
 
-from .apis import Neo4jConnection, recommendGraph
+from .apis import Neo4jConnection, recommendGraph, recommendImage
 from django.conf import settings
 
 
@@ -15,9 +16,11 @@ def movieRecommReturn(request):
         # STIX 2 to elasticsearch
         if request.data['movieTitle'] != '':
             conn = Neo4jConnection(uri=settings.NEO4J_ADDRESS, user=settings.NEO4J_ID, pwd=settings.NEO4J_PWD)
-            reco = recommendGraph(conn, request.data['movieTitle'])
+            graph = recommendGraph(conn, request.data['movieTitle'])
+            image = recommendImage(conn, request.data['movieTitle'])
+            data = {'graph': graph, 'image': image}
             conn.close()
             #print(reco)
-            return Response({"message": "Conversion complete!", "data": reco})
+            return Response({"message": "Conversion complete!", "data": data})
 
     return Response({"message": "Hello, world!"})

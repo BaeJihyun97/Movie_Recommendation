@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import '../css/movieCard.css';
 
 import { MovieCard } from '../component';
 import { Pagination } from '../component';
@@ -11,8 +12,11 @@ const Recommend = () => {
 
 
   const [limit, setLimit] = useState(5);
-  const [page, setPage] = useState(1);
-  const offset = (page - 1) * limit;
+  const [page1, setPage1] = useState(1);
+  const [page2, setPage2] = useState(1);
+  const offset1 = (page1 - 1) * limit;
+  const offset2 = (page2 - 1) * limit;
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     movieTitle: '',
@@ -28,7 +32,8 @@ const Recommend = () => {
     });
   };
 
-  const [resData, setResdata] = useState([]);
+  const [graphData, setGraphData] = useState([]);
+  const [imageData, setImageData] = useState([]);
 
   const url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
 
@@ -57,14 +62,15 @@ const Recommend = () => {
         body: JSON.stringify(data),
     }).then(response => response.json())
     .then((response) => {
-        const res = JSON.parse(response.data)
-        if(res)
-        {   setResdata(res);
-            console.log(res)
+        //const res = JSON.parse(response.data)
+        if(response.data)
+        {   setGraphData(response.data.graph);
+            setImageData(response.data.image);
+            console.log(response.data.graph)
             setLoading(true);
         }
     }).catch((error)=> {
-        console.error(error);
+        //console.error(error);
         setLoading(false);
     })
   };
@@ -81,15 +87,26 @@ const Recommend = () => {
       <br /><br />
       {data && <li>{data.name}</li>}
 
-      <div id="movieTable">
-        {resData.slice(offset, offset + limit).map((resDataE) => <MovieCard key={resDataE.movie_content_seq} movieTitle={resDataE.movieTitle}></MovieCard>)}
+      <div className='movieTable' id="movieTable1">
+        {graphData.slice(offset1, offset1 + limit).map((resDataE) => <MovieCard key={resDataE.movie_content_seq} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
       </div>
 
       <Pagination
-            total={loading?resData.length:0}
+            total={loading?graphData.length:0}
             limit={limit}
-            page={page}
-            setPage={setPage}
+            page={page1}
+            setPage={setPage1}
+      />
+
+      <div className='movieTable' id="movieTable2">
+        {imageData.slice(offset2, offset2 + limit).map((resDataE) => <MovieCard key={resDataE.movie_content_seq} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
+      </div>
+
+      <Pagination
+            total={loading?imageData.length:0}
+            limit={limit}
+            page={page2}
+            setPage={setPage2}
       />
 
     </div>
