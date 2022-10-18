@@ -1,0 +1,17 @@
+.info {
+    padding-top: 50px;
+    color: white;
+    display: flex;
+    width: 95%;
+    margin: auto;
+
+    p {
+        color: gray;
+    }
+
+    ul {
+        span {
+            margin: 0 10px;
+        }
+    }
+}
