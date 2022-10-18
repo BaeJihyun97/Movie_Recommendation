@@ -83,7 +83,7 @@ const Recommend = () => {
             <nav>
                 <div className="menu">
                     <Link to="/mainpage">
-                        <img src="./img/logo.png" />
+                        <img src="./img/l_movie.png" />
                     </Link> 
                     <ul className="ul-none d-flex">
                         <li><a href="#">홈</a></li>
