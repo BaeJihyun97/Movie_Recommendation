@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useLocation} from 'react-router-dom';
 import axios from 'axios';
 import '../css/movieCard.css';
 
@@ -10,6 +11,9 @@ const { _, REACT_APP_BASE_BACKEND_URL } = process.env;
 
 const Recommend = () => {
 
+  const {state} = useLocation();
+  console.log("state", state);
+  const [data, setData] = useState(state);
 
   const [limit, setLimit] = useState(5);
   const [page1, setPage1] = useState(1);
@@ -18,9 +22,9 @@ const Recommend = () => {
   const offset2 = (page2 - 1) * limit;
 
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    movieTitle: '',
-  });
+  // const [data, setData] = useState({
+  //   movieTitle: '',
+  // });
 
   const {movieTitle} = data;
 
@@ -36,6 +40,7 @@ const Recommend = () => {
   const [imageData, setImageData] = useState([]);
 
   const url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
+
 
   const onClick = async () => {
 //    try{
@@ -75,6 +80,9 @@ const Recommend = () => {
     })
   };
 
+  useEffect(() => {
+    onClick();
+  }, [])
 
   return(
     <div>
