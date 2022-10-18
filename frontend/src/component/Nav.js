@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import '../sass/Nav.scss';
 import React from 'react';
 
-const { _, REACT_APP_BASE_BACKEND_URL } = process.env;
-
 function Nav(props) {
 
     return (
@@ -25,19 +23,13 @@ function Nav(props) {
                 <div className="right-menu">
                     <div className="search-box">
                         <i className="bi bi-search" onClick={props.sendTitle}></i>
-                        <input id="movieTitle" name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={props.movieTitle} onChange={props.onChange} />
+                        <input name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={props.movieTitle} onChange={props.onChange} />
                     </div>
                     <i className="bi bi-person-fill"></i>
                 </div>
             </nav>
         </header>
     );
-  }
+}
   
-  export default Nav;
-
-
-  /*
-  <input id="title" name="title" placeholder="영화 제목을 입력하세요." />
-  <i className="bi bi-search" onClick={sendTitle}></i>
-  */
+export default Nav;
