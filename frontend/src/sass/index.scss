@@ -1,0 +1,40 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+}
+
+html, body, #root, .App {
+    height: 100%;
+}
+
+.ul-none {
+    list-style: none;
+}
+
+.d-none {
+    display: none;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.slider::-webkit-scrollbar {
+    height: 5px;
+    width: 10px;
+}
+
+.slider::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 10px;
+    width: 30%;
+}
+
+.slider::-webkit-scrollbar-thumb:active {
+    background-color: white;
+}
+
+.slider::-webkit-scrollbar-track {
+    background-color: black;
+}
