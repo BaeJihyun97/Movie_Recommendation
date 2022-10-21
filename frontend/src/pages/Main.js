@@ -17,7 +17,8 @@ const Main = () => {
   const handleLogout = useCallback(() => {
     logout().then(() => {
         setUser(null);
-      navigate('/login');
+        sessionStorage.clear();
+        navigate('/login');
     });
   }, [setUser, navigate]);
 
@@ -25,6 +26,10 @@ const Main = () => {
   if (!user) {
     return null;
   }
+
+ sessionStorage.setItem("UID", user?user.id:null);
+ console.log(sessionStorage.getItem("UID"));
+
 
   return (
     <div>

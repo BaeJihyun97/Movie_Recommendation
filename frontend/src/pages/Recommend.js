@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import '../css/movieCard.css';
 import '../sass/Recommend.scss';
+import { post } from '../utils/sdk';
 
-import { MovieCard } from '../component';
-import { Pagination } from '../component';
+import { MovieCard, Pagination } from '../component';
 
 
 const { _, REACT_APP_BASE_BACKEND_URL } = process.env;
@@ -22,7 +22,7 @@ const Recommend = () => {
 
     const [loading, setLoading] = useState(false);
 
-    const { movieTitle } = data;
+    const { movieTitle } = data?data:"";
 
     const onChange = e => {
         const {name, value} = e.target;
@@ -32,50 +32,72 @@ const Recommend = () => {
     const [graphData, setGraphData] = useState([]);
     const [imageData, setImageData] = useState([]);
 
-    const url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
 
+
+
+    const fetchF = async (url, method, data) => {
+        return fetch(url,
+        {
+            method: method,
+            headers: {
+                "Content-Type": "application/json; charset=utf8",
+            },
+            body: JSON.stringify(data),
+        }).then(response=>response.json())
+        .then(function(response) {
+            return response
+        }).catch((error)=> {
+            console.log(error)
+            setLoading(false);
+        });
+
+    }
 
   const onClick = async () => {
-//    try{
-//      const reqData = JSON.stringify(data);
-//      const response = await axios.post(url, reqData,{
-//        headers: {
-//          // Overwrite Axios's automatically set Content-Type
-//          'Content-Type': 'application/json'
-//        }
-//      });
-//      setResdata(response.data);
-//      setLoading(true);
-//    } catch (e) {
-//      console.log(e);
-//      console.log(url);
-//    }
 
-    fetch(url,
-    {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json; charset=utf8",
-        },
-        body: JSON.stringify(data),
-    }).then(response => response.json())
-    .then((response) => {
-        //const res = JSON.parse(response.data)
-        if(response.data)
-        {   setGraphData(response.data.graph);
+    let url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
+    const response = await fetchF(url, "POST", {"data":data, "uid":sessionStorage.getItem("UID")});
+    console.log('response fetchF', response)
+
+
+    if(response && response.data)
+        {
+            setGraphData(response.data.graph);
             setImageData(response.data.image);
-            console.log(response.data.graph)
             setLoading(true);
         }
-    }).catch((error)=> {
-        //console.error(error);
-        setLoading(false);
-    })
   };
+
 
   useEffect(() => {
     onClick();
   }, [])
+
+
+  const updateLiked = (data) => {
+    let headers = {
+       "Content-Type": "application/json; charset=utf8",
+    };
+    if (data.liked == 0){
+
+        let url = REACT_APP_BASE_BACKEND_URL + "/service/insertLiked/";
+        const response = fetchF(url, "POST", data);
+        console.log('response fetchF', response)
+
+        if(response)
+            onClick();
+        }
+    else {
+        let url = REACT_APP_BASE_BACKEND_URL + "/service/deleteLiked/";
+        const response = fetchF(url, "POST", data);
+        console.log('response fetchF', response)
+
+        if(response)
+            onClick();
+    }
+    onClick();
+
+  }
 
   return(
     <div className="recommend">
@@ -84,7 +106,7 @@ const Recommend = () => {
                 <div className="menu">
                     <Link to="/mainpage">
                         <img src="./img/l_movie.png" />
-                    </Link> 
+                    </Link>
                     <ul className="ul-none d-flex">
                         <li><a href="#">홈</a></li>
                         <li><a href="#">시리즈</a></li>
@@ -104,17 +126,10 @@ const Recommend = () => {
             </nav>
         </header>
 
-        {/* <h1>영화 탐색</h1>
-        <p>비슷한 영화를 보고 싶은 제목을 입력하세요</p>
-        <form>
-            <input name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={movieTitle} onChange={onChange} />
-            <button type="button" onClick={onClick}>탐색!</button>
-        </form> */}
-
         {data && <li>{data.name}</li>}
         <h3 className="graph-title">그래프</h3>
         <div className='movieTable' id="movieTable1">
-            {graphData.slice(offset1, offset1 + limit).map((resDataE) => <MovieCard key={resDataE.movie_content_seq} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
+            {graphData.slice(offset1, offset1 + limit).map((resDataE) => <MovieCard propFunction={updateLiked} key={resDataE.movie_content_seq} liked={resDataE.liked} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
         </div>
 
         <Pagination
@@ -126,7 +141,7 @@ const Recommend = () => {
 
         <h3>이미지</h3>
         <div className='movieTable' id="movieTable2">
-            {imageData.slice(offset2, offset2 + limit).map((resDataE) => <MovieCard key={resDataE.movie_content_seq} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
+            {imageData.slice(offset2, offset2 + limit).map((resDataE) => <MovieCard propFunction={updateLiked} key={resDataE.movie_content_seq} liked={resDataE.liked} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
         </div>
 
         <Pagination

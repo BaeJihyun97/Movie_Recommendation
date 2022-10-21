@@ -6,6 +6,7 @@ import numpy as np
 from numpy import dot
 from numpy.linalg import norm
 import json
+from service.views import findLiked
 
 np_load = np.load('../../embed_movie_learned.npy')
 embed_movie_learned = torch.from_numpy(np_load)
@@ -16,6 +17,16 @@ labels = pd.read_csv("../../image_clustered.txt", sep="\t")
 image_clustered_label = []
 for label in labels["labels"]:
   image_clustered_label.append([int(t) for t in re.sub(pattern="[\[\]]", repl="", string = label).split(",")])
+
+
+def find_movie(title):
+    if title in titles:
+        return titles.index(title)
+    else:
+        for i, movie in enumerate(titles):
+            if re.search(title, movie) is not None:
+                return i
+        return None
 
 
 def cos_sim(A, B):
@@ -52,7 +63,11 @@ class Neo4jConnection:
         return response
 
 
-def recommendGraph(Neo4jConnection, movie_title):
+def recommendGraph(Neo4jConnection, movie_title, uid):
+    movie_id = find_movie(movie_title)
+    if movie_id is None:
+        return []
+    movie_title = titles[movie_id]
     score = []
     score2 = []
     target = embed_movie_learned[titles.index(movie_title)]
@@ -81,10 +96,20 @@ def recommendGraph(Neo4jConnection, movie_title):
     recommT = []
     recomm = []
 
+    if uid:
+        liked, n_liked = findLiked(uid)
+    else:
+        liked = []
+        n_liked = 0
+
+
     for i in range(5):
+
         recommT.append({"movie_content_seq": i,
                         "movie_content_id": score[i][0],
-                        "movieTitle": titles[score[i][0]]})
+                        "movieTitle": titles[score[i][0]],
+                        "liked": 1 if score[i][0] in liked else 0})
+
         recomm.append({"movie_content_seq": i,
                        "movie_content_id": score[i][0],
                        "movieTitle": score[i][0]})
@@ -92,14 +117,20 @@ def recommendGraph(Neo4jConnection, movie_title):
     for i in range(5):
         recommT.append({"movie_content_seq": i + 5,
                         "movie_content_id": score2[i][0],
-                        "movieTitle": titles[score2[i][0]]})
+                        "movieTitle": titles[score2[i][0]],
+                        "liked": 1 if score[i][0] in liked else 0})
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
 
     return recommT
 
-def recommendImage(Neo4jConnection, movie_title):
+def recommendImage(Neo4jConnection, movie_title, uid):
+
+    movie_id = find_movie(movie_title)
+    if movie_id is None:
+        return []
+    movie_title = titles[movie_id]
 
     target = image_clustered_label[titles.index(movie_title)]
     movie_title = re.sub(pattern='[^\w\s]', repl='', string=movie_title)
@@ -132,10 +163,17 @@ def recommendImage(Neo4jConnection, movie_title):
     recommT = []
     recomm = []
 
+    if uid:
+        liked, n_liked = findLiked(uid)
+    else:
+        liked = []
+        n_liked = 0
+
     for i in range(5):
         recommT.append({"movie_content_seq": i,
                         "movie_content_id": score[i][0],
-                        "movieTitle": titles[score[i][0]]})
+                        "movieTitle": titles[score[i][0]],
+                        "liked": 1 if score[i][0] in liked else 0})
         recomm.append({"movie_content_seq": i,
                        "movie_content_id": score[i][0],
                        "movieTitle": score[i][0]})
@@ -143,10 +181,12 @@ def recommendImage(Neo4jConnection, movie_title):
     for i in range(5):
         recommT.append({"movie_content_seq": i + 5,
                         "movie_content_id": score2[i][0],
-                        "movieTitle": titles[score2[i][0]]})
+                        "movieTitle": titles[score2[i][0]],
+                        "liked": 1 if score[i][0] in liked else 0})
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
+
 
     return recommT
 
