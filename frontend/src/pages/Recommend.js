@@ -56,6 +56,7 @@ const Recommend = () => {
     let url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
     // better way???
     let temp = data? data:{"movieTitle": localStorage.getItem("title")};
+    console.log(sessionStorage.getItem("UID"));
     const response = await fetchF(url, "POST", {"data":temp, "uid":sessionStorage.getItem("UID")});
 
 

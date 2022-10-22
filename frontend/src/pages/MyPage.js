@@ -1,13 +1,12 @@
 import Nav from '../component/Nav';
 import "../sass/index.scss";
 
-
 import React, { useContext, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { logout } from './sdk';
 import { UserContext } from '../component';
-import { useUserRequired } from '../utils/hooks';
+import { useUserRequired, useDidMountEffect } from '../utils/hooks';
 
 import axios from 'axios';
 
@@ -24,18 +23,25 @@ const MyPage = () => {
     });
   }, [setUser, navigate]);
 
+  sessionStorage.setItem("UID", user?user.id:null)
 
-    sessionStorage.setItem("UID", user?user.id:null);
 
-    useEffect(() => {
-        if (!sessionStorage.getItem("UID")) {
+    useDidMountEffect(() => {
+        console.log(sessionStorage.getItem("UID"));
+        if (sessionStorage.getItem("UID") === null || sessionStorage.getItem("UID") === undefined ||
+        sessionStorage.getItem("UID") === "null" || sessionStorage.getItem("UID") === "undefined") {
+            console.log("navigate")
             navigate('/login');
         }
-    }, [])
+    }, [user]);
+
+
 
     if (!user) {
         return null;
     }
+
+
 
   return (
     <div>

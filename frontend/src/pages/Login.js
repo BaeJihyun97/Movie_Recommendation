@@ -19,6 +19,7 @@ const Login = () => {
     resp => {
       if (resp.ok) {
         setUser(resp.data);
+        sessionStorage.setItem("USER", resp.data);
         history('/');
       } else {
         notifyError(resp.data[0]);

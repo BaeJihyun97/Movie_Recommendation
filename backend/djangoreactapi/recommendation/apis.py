@@ -108,6 +108,7 @@ def recommendGraph(Neo4jConnection, movie_title, uid):
     recommT = []
     recomm = []
 
+    print(uid)
     if uid:
         liked, n_liked = findLiked(uid)
     else:
@@ -134,7 +135,7 @@ def recommendGraph(Neo4jConnection, movie_title, uid):
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
-
+    print("likelist", liked)
     return recommT
 
 def recommendImage(Neo4jConnection, movie_title, uid):
@@ -198,7 +199,6 @@ def recommendImage(Neo4jConnection, movie_title, uid):
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
-
 
     return recommT
 

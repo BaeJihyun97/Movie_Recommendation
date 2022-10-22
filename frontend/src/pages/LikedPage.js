@@ -72,7 +72,8 @@ const LikedPage = () => {
     };
 
     useEffect(() => {
-        if(!sessionStorage.getItem("UID")){
+        if (sessionStorage.getItem("UID") === null || sessionStorage.getItem("UID") === undefined ||
+        sessionStorage.getItem("UID") === "null" || sessionStorage.getItem("UID") === "undefined") {
             navigate("/login");
         }
         else {

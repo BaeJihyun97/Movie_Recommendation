@@ -10,10 +10,15 @@ const MovieCard = (props) => {
     const navigate = useNavigate();
 
     const submitLiked = () => {
-        if (sessionStorage.getItem("UID") != null)
-            props.propFunction({"liked_movie": props.movieNum, "liked": props.liked, "uid":sessionStorage.getItem("UID")})
+        if (sessionStorage.getItem("UID") === null || sessionStorage.getItem("UID") === undefined ||
+            sessionStorage.getItem("UID") === "null" || sessionStorage.getItem("UID") === "undefined") {
+                        navigate("/login");
+                        console.log("loging please");
+
+            }
         else
-            navigate("/login");
+            props.propFunction({"liked_movie": props.movieNum, "liked": props.liked, "uid":sessionStorage.getItem("UID")});
+            console.log("complete");
     }
 
     return (

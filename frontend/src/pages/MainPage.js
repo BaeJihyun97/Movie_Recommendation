@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../component';
 
 import Nav from '../component/Nav';
 import Page from '../component/Page';
@@ -11,6 +12,7 @@ const MainPage = () => {
     const navigate = useNavigate();
     const [data, setData] = useState({ movieTitle: ''});
 
+
     const onChange = e => {
         const {name, value} = e.target;
         setData({
@@ -18,9 +20,12 @@ const MainPage = () => {
         });
     };
 
+
+
     const sendTitle = async () => {
         navigate("/recommend", { state: data });
     }
+
     
 
     return (

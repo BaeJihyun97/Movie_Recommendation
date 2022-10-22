@@ -17,7 +17,7 @@ def movieRecommReturn(request):
         # STIX 2 to elasticsearch
         if request.data is not None and request.data["data"] is not None and request.data['data']['movieTitle'] != '':
             title = request.data['data']['movieTitle']
-            if request.data['uid']: uid = int(request.data['uid'])
+            if request.data['uid'] and request.data['uid'].isdigit(): uid = int(request.data['uid'])
             else: uid = None
             conn = Neo4jConnection(uri=settings.NEO4J_ADDRESS, user=settings.NEO4J_ID, pwd=settings.NEO4J_PWD)
             graph = recommendGraph(conn, title.strip(), uid)
