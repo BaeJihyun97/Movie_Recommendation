@@ -24,15 +24,15 @@ const Recommend = () => {
 
     const { movieTitle } = data?data:"";
 
-    const onChange = e => {
-        const {name, value} = e.target;
-        setData({...data, [name]: value});
-    };
-
     const [graphData, setGraphData] = useState([]);
     const [imageData, setImageData] = useState([]);
 
 
+    const onChange = e => {
+        const {name, value} = e.target;
+        setData({...data, [name]: value});
+        localStorage.setItem('title', value);
+    };
 
 
     const fetchF = async (url, method, data) => {
@@ -50,14 +50,13 @@ const Recommend = () => {
             console.log(error)
             setLoading(false);
         });
-
     }
 
   const onClick = async () => {
-
     let url = REACT_APP_BASE_BACKEND_URL + '/recommendation/recommend/' ;
-    const response = await fetchF(url, "POST", {"data":data, "uid":sessionStorage.getItem("UID")});
-    console.log('response fetchF', response)
+    // better way???
+    let temp = data? data:{"movieTitle": localStorage.getItem("title")};
+    const response = await fetchF(url, "POST", {"data":temp, "uid":sessionStorage.getItem("UID")});
 
 
     if(response && response.data)
@@ -68,10 +67,10 @@ const Recommend = () => {
         }
   };
 
-
   useEffect(() => {
     onClick();
   }, [])
+
 
 
   const updateLiked = (data) => {
@@ -96,6 +95,7 @@ const Recommend = () => {
             onClick();
     }
     onClick();
+    console.log(graphData);
 
   }
 
@@ -109,17 +109,13 @@ const Recommend = () => {
                     </Link>
                     <ul className="ul-none d-flex">
                         <li><a href="#">홈</a></li>
-                        <li><a href="#">시리즈</a></li>
-                        <li><a href="#">영화</a></li>
-                        <li><a href="#">NEW! 요즘 대세 콘텐츠</a></li>
-                        <li><a href="#">내가 찜한 콘텐츠</a></li>
-                        <li><a href="#">언어별로 찾아보기</a></li>
+                        <Link to="/like"><li>내가 찜한 콘텐츠</li></Link>
                     </ul>
                 </div>
                 <div className="right-menu">
                     <div className="search-box">
-                        <i className="bi bi-search" onClick={onClick}></i>
-                        <input name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={movieTitle} onChange={onChange} />
+                        <i className="bi bi-search" onClick={onClick} ></i>
+                        <input name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={movieTitle || ''} onChange={onChange} />
                     </div>
                     <i className="bi bi-person-fill"></i>
                 </div>

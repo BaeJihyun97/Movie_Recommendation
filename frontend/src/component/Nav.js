@@ -13,11 +13,7 @@ function Nav(props) {
                     </Link> 
                     <ul className="ul-none d-flex">
                         <li><a href="#">홈</a></li>
-                        <li><a href="#">시리즈</a></li>
-                        <li><a href="#">영화</a></li>
-                        <li><a href="#">NEW! 요즘 대세 콘텐츠</a></li>
-                        <li><a href="#">내가 찜한 콘텐츠</a></li>
-                        <li><a href="#">언어별로 찾아보기</a></li>
+                        <Link to="/like"><li>내가 찜한 콘텐츠</li></Link>
                     </ul>
                 </div>
                 <div className="right-menu">
@@ -25,7 +21,7 @@ function Nav(props) {
                         <i className="bi bi-search" onClick={props.sendTitle}></i>
                         <input name="movieTitle" type="text" placeholder="영화 제목을 입력하세요." value={props.movieTitle} onChange={props.onChange} />
                     </div>
-                    <i className="bi bi-person-fill"></i>
+                    <Link to="/user"><i className="bi bi-person-fill"></i></Link>
                 </div>
             </nav>
         </header>

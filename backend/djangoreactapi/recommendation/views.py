@@ -12,10 +12,10 @@ from django.conf import settings
 
 @api_view(['GET', 'POST'])
 def movieRecommReturn(request):
-    if request.method == 'POST':
+    if request is not None and request.method == 'POST':
 
         # STIX 2 to elasticsearch
-        if request.data is not None and request.data['data']['movieTitle'] != '':
+        if request.data is not None and request.data["data"] is not None and request.data['data']['movieTitle'] != '':
             title = request.data['data']['movieTitle']
             if request.data['uid']: uid = int(request.data['uid'])
             else: uid = None
@@ -27,4 +27,5 @@ def movieRecommReturn(request):
             conn.close()
             return Response({"message": "Conversion complete!", "data": data})
 
-    return Response({"message": "Hello, world!"})
+    data = {'graph': [], 'image': []}
+    return Response({"message": "Conversion complete!", "data": data})

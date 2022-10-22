@@ -6,7 +6,7 @@ import numpy as np
 from numpy import dot
 from numpy.linalg import norm
 import json
-from service.views import findLiked
+from utils.dbsearch import findLiked
 
 np_load = np.load('../../embed_movie_learned.npy')
 embed_movie_learned = torch.from_numpy(np_load)
@@ -61,6 +61,18 @@ class Neo4jConnection:
             if session is not None:
                 session.close()
         return response
+
+
+def makeMovieList(movieid):
+    movieList = []
+    for i, m in enumerate(movieid):
+        movieList.append({"movie_content_seq": i,
+                          "movie_content_id": m,
+                          "movieTitle": titles[m],
+                          "liked": 1})
+
+    return movieList
+
 
 
 def recommendGraph(Neo4jConnection, movie_title, uid):
@@ -118,7 +130,7 @@ def recommendGraph(Neo4jConnection, movie_title, uid):
         recommT.append({"movie_content_seq": i + 5,
                         "movie_content_id": score2[i][0],
                         "movieTitle": titles[score2[i][0]],
-                        "liked": 1 if score[i][0] in liked else 0})
+                        "liked": 1 if score2[i][0] in liked else 0})
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})
@@ -182,7 +194,7 @@ def recommendImage(Neo4jConnection, movie_title, uid):
         recommT.append({"movie_content_seq": i + 5,
                         "movie_content_id": score2[i][0],
                         "movieTitle": titles[score2[i][0]],
-                        "liked": 1 if score[i][0] in liked else 0})
+                        "liked": 1 if score2[i][0] in liked else 0})
         recomm.append({"movie_content_seq": i + 5,
                        "movie_content_id": score2[i][0],
                        "movieTitle": score2[i][0]})

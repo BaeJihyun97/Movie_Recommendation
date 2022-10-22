@@ -69,15 +69,11 @@ const Login = () => {
 
   return (
     <div>
-      <h1>Welcome to our Demo App!</h1>
-
-      <h2>Server-side flow:</h2>
-      <GoogleButton
-        onClick={openGoogleLoginPage}
-        label="Sign in with Google"
-        disabled={!REACT_APP_GOOGLE_CLIENT_ID}
-      />
-
+			<GoogleButton
+                onClick={openGoogleLoginPage}
+                label="Google"
+                disabled={!REACT_APP_GOOGLE_CLIENT_ID}
+            />
     </div>
   );
 };

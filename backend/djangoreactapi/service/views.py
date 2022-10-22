@@ -5,35 +5,19 @@ import pymysql
 from django.conf import settings
 import re
 
+from recommendation.apis import makeMovieList
+from utils.dbsearch import findLiked
 
-def findLiked(uid, coni=None):
-    if coni is None:
-        con = pymysql.connect(host=settings.DATABASES["default"]["HOST"], user=settings.DATABASES["default"]["USER"],
-                              password=settings.DATABASES["default"]["PASSWORD"], db=settings.DATABASES["default"]["NAME"]
-                              , charset='utf8', port=int(settings.DATABASES["default"]["PORT"]))
-    else: con = coni
-
-    cur = con.cursor()
-    sql = f"SELECT liked, n_liked FROM service_like WHERE uid_id={uid}"
-    cur.execute(sql)
-    temp = cur.fetchall()
-    if len(temp) != 0:
-        data = temp[0]
-        data = [int(l) for l in data[0].split(",")]
-    else:
-        data = []
-    if coni is None:
-        con.close()
-    return data, len(data)
 
 
 # Create your views here.
 @api_view(['GET', 'POST'])
 def getLiked(request):
-    if request.method == 'POST':
-        if request.GET.get("uid", "") != "":
-            uid = request.GET.get("uid", "")
-        # if request.data['uid'] != '':
+    if request is not None and request.method == 'POST':
+        # if request.GET.get("uid", "") != "":
+        #     uid = request.GET.get("uid", "")
+        if request.data['uid'] != '':
+            uid = request.data['uid']
 
             liked, n_liked = findLiked(uid)
             data = {"liked": liked, "n_liked": n_liked}
@@ -47,8 +31,28 @@ def getLiked(request):
 
 
 @api_view(['GET', 'POST'])
+def getLikedMoive(request):
+    if request is not None and request.method == 'POST':
+        # if request.GET.get("uid", "") != "":
+        #     uid = request.GET.get("uid", "")
+        if request.data['uid'] != '':
+            uid = request.data['uid']
+
+            liked, n_liked = findLiked(uid)
+            likedList = makeMovieList(liked)
+
+            data = {"movieList": likedList, "n_liked": n_liked}
+        else:
+            data = {}
+
+        return Response({"message": "Conversion complete!", "data": data})
+
+    return Response({"message": "Hello, world!"})
+
+
+@api_view(['GET', 'POST'])
 def insertLiked(request):
-    if request.method == 'POST':
+    if request is not None and request.method == 'POST':
         # if (request.GET.get("uid", "") != "") and (request.GET.get("liked_movie", "") != ""):
         #     liked_movie = int(request.GET.get("liked_movie", ""))
         #     uid = int(request.GET.get("uid", ""))
@@ -90,7 +94,7 @@ def insertLiked(request):
 
 @api_view(['GET', 'POST'])
 def deleteLiked(request):
-    if request.method == 'POST':
+    if request is not None and request.method == 'POST':
         # if (request.GET.get("uid", "") != "") and (request.GET.get("liked_movie", "") != ""):
         #     liked_movie = int(request.GET.get("liked_movie", ""))
         #     uid = int(request.GET.get("uid", ""))
