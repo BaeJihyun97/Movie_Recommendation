@@ -17,8 +17,10 @@ const Recommend = () => {
     const [limit, setLimit] = useState(5);
     const [page1, setPage1] = useState(1);
     const [page2, setPage2] = useState(1);
+    const [page3, setPage3] = useState(1);
     const offset1 = (page1 - 1) * limit;
     const offset2 = (page2 - 1) * limit;
+    const offset3 = (page3 - 1) * limit;
 
     const [loading, setLoading] = useState(false);
 
@@ -26,6 +28,7 @@ const Recommend = () => {
 
     const [graphData, setGraphData] = useState([]);
     const [imageData, setImageData] = useState([]);
+    const [keywordData, setKeywordData] = useState([]);
 
 
     const onChange = e => {
@@ -64,7 +67,9 @@ const Recommend = () => {
         {
             setGraphData(response.data.graph);
             setImageData(response.data.image);
+            setKeywordData(response.data.keyword);
             setLoading(true);
+            console.log(response.data.keyword);
         }
   };
 
@@ -146,6 +151,18 @@ const Recommend = () => {
                 limit={limit}
                 page={page2}
                 setPage={setPage2}
+        />
+
+        <h3>키워드</h3>
+        <div className='movieTable' id="movieTable3">
+            {keywordData.slice(offset3, offset3 + limit).map((resDataE) => <MovieCard propFunction={updateLiked} key={resDataE.movie_content_seq} liked={resDataE.liked} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
+        </div>
+
+        <Pagination
+                total={loading?keywordData.length:0}
+                limit={limit}
+                page={page3}
+                setPage={setPage3}
         />
 
     </div>

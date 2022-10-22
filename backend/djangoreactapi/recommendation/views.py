@@ -2,7 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import json
 
-from .apis import Neo4jConnection, recommendGraph, recommendImage
+from .apis import Neo4jConnection, recommendGraph, recommendImage, recommendKeyword
 from django.conf import settings
 
 
@@ -22,7 +22,8 @@ def movieRecommReturn(request):
             conn = Neo4jConnection(uri=settings.NEO4J_ADDRESS, user=settings.NEO4J_ID, pwd=settings.NEO4J_PWD)
             graph = recommendGraph(conn, title.strip(), uid)
             image = recommendImage(conn, title.strip(), uid)
-            data = {'graph': graph, 'image': image}
+            keyword = recommendKeyword(title.strip(), uid)
+            data = {'graph': graph, 'image': image, 'keyword': keyword}
             print(len(data['graph']))
             conn.close()
             return Response({"message": "Conversion complete!", "data": data})
