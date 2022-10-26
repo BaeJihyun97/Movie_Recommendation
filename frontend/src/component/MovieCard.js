@@ -27,18 +27,20 @@ const MovieCard = (props) => {
                 <img src={path} alt={props.movieTitle}></img>
             </div>
 
-            <div>
-            <button onClick={submitLiked}>
-                {
-                    props.liked?<img src={path2} alt={0}></img>:<img src={path3} alt={1}></img>
-
-                }
-                </button>
+            <div id="cardBottom">
+                <div id='metaData'>
+                    {props.movieTitle}
+                </div>
+                <div id="likeButton" >
+                    <button onClick={submitLiked}>
+                        {
+                            props.liked?<img src={path2} alt={0}></img>:<img src={path3} alt={1}></img>
+                        }
+                    </button>
+                </div>
             </div>
 
-            <div id='metaData'>
-                {props.movieTitle}
-            </div>
+
         </div>
     );
 };

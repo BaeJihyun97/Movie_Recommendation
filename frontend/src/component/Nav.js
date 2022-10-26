@@ -12,7 +12,7 @@ function Nav(props) {
                         <img src="./img/l_movie.png" />
                     </Link> 
                     <ul className="ul-none d-flex">
-                        <li><a href="#">홈</a></li>
+                        <Link to="/"><li>홈</li></Link>
                         <Link to="/like"><li>내가 찜한 콘텐츠</li></Link>
                     </ul>
                 </div>

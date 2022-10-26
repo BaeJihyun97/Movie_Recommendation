@@ -16,7 +16,6 @@ body {
 
 #movieContents {
     flex-direction: column;
-    color: white;
 }
 
 #movie {
