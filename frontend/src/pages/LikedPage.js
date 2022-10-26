@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import Nav from '../component/Nav';
 import "../sass/index.scss";
+import "../css/likedPage.css";
 import { MovieCard } from '../component';
+import { useDidMountEffect } from '../utils/hooks';
 
 const { _, REACT_APP_BASE_BACKEND_URL } = process.env;
 
@@ -71,24 +73,35 @@ const LikedPage = () => {
         }
     };
 
-    useEffect(() => {
+
+    useDidMountEffect(() => {
+        console.log(sessionStorage.getItem("UID"));
         if (sessionStorage.getItem("UID") === null || sessionStorage.getItem("UID") === undefined ||
         sessionStorage.getItem("UID") === "null" || sessionStorage.getItem("UID") === "undefined") {
-            navigate("/login");
+            console.log("navigate")
+            navigate('/login');
         }
         else {
             update();
         }
+    }, []);
+
+    useEffect(() => {
+        update();
     }, [])
 
 
     return (
-        <div>
-            <Nav onChange={onChange} sendTitle={sendTitle} />
+        <div id="movieContents">
+            <div id="head">
+                <Nav onChange={onChange} sendTitle={sendTitle} />
+            </div>
             <div>
-                <div className='movieTable' id="movieTable1">
+            <div id="movie">
+                <div className="movieTable" id="movieTablei">
                     {likedata.map((resDataE) => <MovieCard propFunction={updateLiked} key={resDataE.movie_content_seq} liked={resDataE.liked} movieTitle={resDataE.movieTitle} movieNum={resDataE.movie_content_id}></MovieCard>)}
                 </div>
+            </div>
             </div>
 
 

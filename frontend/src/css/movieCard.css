@@ -9,4 +9,5 @@
     display: flex;
     flex-direction: row;
     gap: 59px;
+    color: white;
 }

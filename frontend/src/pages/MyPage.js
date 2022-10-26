@@ -1,5 +1,6 @@
 import Nav from '../component/Nav';
 import "../sass/index.scss";
+import "../css/myPage.css"
 
 import React, { useContext, useCallback, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +36,20 @@ const MyPage = () => {
         }
     }, [user]);
 
+        const [data, setData] = useState({ movieTitle: ''});
+
+
+    const onChange = e => {
+        const {name, value} = e.target;
+        setData({
+            ...data, [name]: value
+        });
+    };
+
+    const sendTitle = async () => {
+        navigate("/recommend", { state: data });
+    }
+
 
 
     if (!user) {
@@ -44,11 +59,18 @@ const MyPage = () => {
 
 
   return (
-    <div>
-      <h3>{user.email}</h3>
-      <button onClick={handleLogout}>
-        LOGOUT
-      </button>
+    <div id="userinfobody">
+
+                <Nav onChange={onChange} sendTitle={sendTitle} />
+
+
+                <div id="userinfo">
+                    <h3>{user.email}</h3>
+                    <button onClick={handleLogout}>
+                        LOGOUT
+                    </button>
+                </div>
+
     </div>
   );
 };
