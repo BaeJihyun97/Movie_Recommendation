@@ -10,15 +10,20 @@
 
 .ButtonLP {
     border: none;
-    border-radius: 8px;
-    padding: 8px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    /* padding: 8px; */
     margin: 0;
     color: black;
     font-size: 1rem;
+    text-align: center;
+    line-height: 30px;
 }
 
 .ButtonLP:hover {
     background: #EFEFEF;
+    color: black;
     cursor: pointer;
     transform: translateY(-2px);
 }
@@ -30,7 +35,8 @@
 }
 
 .currPage {
-    background: #B1CE91;
+    background: black;
+    color: white;
     font-weight: bold;
     cursor: revert;
     transform: revert;

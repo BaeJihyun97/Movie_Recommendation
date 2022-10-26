@@ -1,0 +1,36 @@
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+
+#userinfobody{
+    width:100%;
+    height:100%;
+}
+
+#userinfo {
+    color: black;
+    width: 50%;
+    height: 50%;
+    margin: 10rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 2rem;
+}

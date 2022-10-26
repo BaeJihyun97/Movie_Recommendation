@@ -1,11 +1,35 @@
 #card {
-    padding: 0.5rem 2rem;
+    /* padding: 0.5rem 2rem; */
     display: flex;
     flex-direction: column;
 }
 
+button {
+    background-color: transparent;
+    border: none;
+    position: relative;
+}
+
 .movieTable {
-    padding: 0.5rem 2rem;
+    /* padding: 0.5rem 2rem; */
     display: flex;
     flex-direction: row;
+    gap: 59px;
+}
+
+#metaData {
+    width: 10rem;
+    position: relative;
+}
+
+
+#cardBottom {
+
+    display: flex;
+    flex-direction: row;
+}
+
+#likeButton {
+    margin: 0;
+    padding: 0;
 }

@@ -1,15 +1,48 @@
 import React, { useEffect, useCallback, useContext } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 
 import GoogleButton from 'react-google-button';
 
+import { validateTokenAndObtainSession } from './validateTokenAndObtainSession';
 import { notifyError } from '../utils/notifications';
+import { UserContext } from '../component';
 
 
 const { REACT_APP_GOOGLE_CLIENT_ID, REACT_APP_BASE_BACKEND_URL } = process.env;
 
 const Login = () => {
 
+  const history = useNavigate();
+  const { setUser } = useContext(UserContext);
+
+  const handleUserInit = useCallback(
+    resp => {
+      if (resp.ok) {
+        setUser(resp.data);
+        sessionStorage.setItem("USER", resp.data);
+        history('/');
+      } else {
+        notifyError(resp.data[0]);
+      }
+    },
+    [history, setUser]
+  );
+
+  const onGoogleLoginSuccess = useCallback(
+    response => {
+      const idToken = response.tokenId;
+      const data = {
+        email: response.profileObj.email,
+        first_name: response.profileObj.givenName,
+        last_name: response.profileObj.familyName
+      };
+
+      validateTokenAndObtainSession({ data, idToken })
+        .then(handleUserInit)
+        .catch(notifyError);
+    },
+    [handleUserInit]
+  );
 
 
   const openGoogleLoginPage = useCallback(() => {
@@ -37,37 +70,13 @@ const Login = () => {
 
   return (
     <div>
-      <h1>Welcome to our Demo App!</h1>
-
-      <h2>Server-side flow:</h2>
-      <GoogleButton
-        onClick={openGoogleLoginPage}
-        label="Sign in with Google"
-        disabled={!REACT_APP_GOOGLE_CLIENT_ID}
-      />
-
+			<GoogleButton
+                onClick={openGoogleLoginPage}
+                label="Google"
+                disabled={!REACT_APP_GOOGLE_CLIENT_ID}
+            />
     </div>
   );
 };
 
 export default Login;
-
-/*
-
-import { useNavigate, useLocation } from 'react-router-dom';
-
-  const navigate = useNavigate();
-  const { search } = useLocation();
-
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(search);
-
-    const error = queryParams.get('error');
-
-    if (error) {
-      notifyError(error);
-      navigate(to, { search: null });
-    }
-  }, [search]);
-*/
