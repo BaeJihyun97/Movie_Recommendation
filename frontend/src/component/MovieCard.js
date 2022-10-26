@@ -31,7 +31,6 @@ const MovieCard = (props) => {
             <button onClick={submitLiked}>
                 {
                     props.liked?<img src={path2} alt={0}></img>:<img src={path3} alt={1}></img>
-
                 }
                 </button>
             </div>

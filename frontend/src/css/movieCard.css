@@ -4,9 +4,22 @@
     flex-direction: column;
 }
 
+button {
+    background-color: transparent;
+    border: none;
+    position: relative;
+    top: 10px;
+    left: 160px;
+}
+
 .movieTable {
     /* padding: 0.5rem 2rem; */
     display: flex;
     flex-direction: row;
     gap: 59px;
+}
+
+#metaData {
+    position: relative;
+    top: -20px;
 }
